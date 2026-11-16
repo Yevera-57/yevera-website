@@ -81,6 +81,20 @@ function render() {
       link.textContent = "閱讀完整報告";
       item.append(link);
     }
+    
+if (r.image && typeof r.image === "string" &&
+    r.image.startsWith("/") && !r.image.startsWith("//")) {
+  const img = document.createElement("img");
+  img.src = r.image;
+  img.alt = r.title || "星宿移動與個人觸發圖";
+  img.loading = "lazy";
+  img.style.width = "100%";
+  img.style.height = "auto";
+  img.style.display = "block";
+  img.style.marginTop = "16px";
+  img.style.borderRadius = "12px";
+  item.append(img);
+}
     results.append(item);
   }
 }
