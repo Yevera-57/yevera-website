@@ -1,0 +1,23 @@
+
+name: Yevera Daily Update
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+      timezone: "Asia/Taipei"
+
+permissions:
+  contents: read
+
+jobs:
+  daily-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Taiwan date and time
+        env:
+          TZ: Asia/Taipei
+        run: |
+          echo "Yevera daily schedule test"
+          date "+Taiwan time: %Y-%m-%d %H:%M:%S %Z"
+          echo "Schedule executed successfully"
