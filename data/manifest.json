@@ -36,7 +36,17 @@
     "title": "11月10日至12日星宿移動與個人觸發",
     "date": "2026-11-10",
     "image": "/file_000000000f0081f8b2e054806925dcfb~2.jpg"
-  }
-]
+  },
+  
+  {
+      "id": "yevera-test-article-2026-11-16",
+      "profileId": "bryan",
+      "versionId": "daily-reading",
+      "title": "每日星宿精讀｜發布功能測試",
+      "date": "2026-11-16",
+      "url": "/test-article-2026-11-16.html"
+    }
+  ]
 }
+
 
