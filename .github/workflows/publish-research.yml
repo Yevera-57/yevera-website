@@ -1,0 +1,90 @@
+
+name: Yevera Research Publisher
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: yevera-research-publisher
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate test report
+        run: |
+          python3 - <<'PY'
+          import json
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          date = datetime.now(
+              ZoneInfo("Asia/Taipei")
+          ).date().isoformat()
+
+          report_id = f"yevera-auto-test-{date}"
+          path = Path(f"reports/auto-test-{date}.html")
+          index = Path("data/manifest.json")
+          data = json.loads(index.read_text(encoding="utf-8"))
+
+          if not isinstance(data.get("reports"), list):
+              raise ValueError("Invalid manifest")
+
+          if any(r.get("id") == report_id for r in data["reports"]):
+              if not path.is_file():
+                  raise ValueError("Report index exists but file is missing")
+              print("Already published")
+          else:
+              if path.exists():
+                  raise FileExistsError(str(path))
+
+              html = (
+                  '<!doctype html><html lang="zh-Hant"><head>'
+                  '<meta charset="utf-8">'
+                  '<meta name="viewport" content="width=device-width,initial-scale=1">'
+                  '<title>Yevera 自動發布測試</title></head><body>'
+                  '<h1>Yevera 自動發布測試</h1>'
+                  f'<p>日期：{date}</p>'
+                  '<p>這是系統測試，不是正式運勢預測。</p>'
+                  '<a href="/reports/">返回報告中心</a>'
+                  '</body></html>'
+              )
+
+              path.parent.mkdir(parents=True, exist_ok=True)
+              path.write_text(html, encoding="utf-8")
+
+              data["reports"].append({
+                  "id": report_id,
+                  "profileId": "bryan",
+                  "versionId": "daily-reading",
+                  "title": f"Yevera 自動發布測試｜{date}",
+                  "date": date,
+                  "url": "/" + path.as_posix()
+              })
+
+              index.write_text(
+                  json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+                  encoding="utf-8"
+              )
+              print("Created:", path)
+          PY
+
+      - name: Commit and push
+        run: |
+          git add data/manifest.json reports/auto-test-*.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Publish Yevera test report"
+          git push
