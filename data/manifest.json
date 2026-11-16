@@ -1,0 +1,31 @@
+
+{
+  "schemaVersion": 1,
+  "site": "Yevera",
+  "timezone": "Asia/Taipei",
+  "profiles": [
+    {
+      "id": "star",
+      "title": "星｜個人星宿精讀",
+      "enabled": true
+    },
+    {
+      "id": "bryan",
+      "title": "bryan｜星宿精讀分享版",
+      "enabled": true
+    }
+  ],
+  "versions": [
+    {
+      "id": "daily-reading",
+      "title": "每日星宿精讀",
+      "type": "article"
+    },
+    {
+      "id": "transit-chart",
+      "title": "星宿移動與個人觸發圖",
+      "type": "image"
+    }
+  ],
+  "reports": []
+}
