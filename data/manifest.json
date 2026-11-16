@@ -27,5 +27,16 @@
       "type": "image"
     }
   ],
-  "reports": []
+
+"reports": [
+  {
+    "id": "bryan-transit-2026-11-10",
+    "profileId": "bryan",
+    "versionId": "transit-chart",
+    "title": "11月10日至12日星宿移動與個人觸發",
+    "date": "2026-11-10",
+    "image": "/file_000000000f0081f8b2e054806925dcfb~2.jpg"
+  }
+]
 }
+
