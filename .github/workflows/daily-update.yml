@@ -3,9 +3,8 @@ name: Yevera Daily Update
 
 on:
   workflow_dispatch:
-  schedule:
+    schedule:
     - cron: "0 0 * * *"
-      timezone: "Asia/Taipei"
 
 permissions:
   contents: read
