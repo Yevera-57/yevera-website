@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Yevera｜月亮時間軸公開功能試跑</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#090a0d;color:#f2f0eb;font:16px/1.65 system-ui,"Noto Sans TC",sans-serif}main{max-width:620px;margin:auto;padding:25px 18px 70px}h1{font-size:25px;line-height:1.4}h2{font-size:18px}p{margin:7px 0 13px}.muted,small{color:#b8bbc6}.card{border:1px solid #383943;border-radius:18px;background:#121318;padding:17px;margin-top:18px}.badge{font-size:12px;border-radius:10px;background:#30313a;padding:4px 8px}.head{display:flex;justify-content:space-between;gap:8px;align-items:center}.bar{position:relative;display:flex;height:36px;border-radius:8px;overflow:hidden;margin:13px 0 6px}.bar>span{display:block}.ruler{display:flex;justify-content:space-between;font-size:12px;color:#b8bbc6}.timeline{position:relative;margin:20px 0 0 65px;border-left:3px solid #616976}.segment{position:relative;padding:5px 8px 10px 18px;min-height:82px}.dot{position:absolute;left:-7px;top:13px;width:11px;height:11px;border-radius:50%}.when{position:absolute;left:-76px;top:8px;width:58px;text-align:right;font-size:13px;color:#b8bbc6}.segment strong{font-size:16px}.segment p{font-size:13px;margin:4px 0}.marker{position:absolute;z-index:3;left:-16px;display:none;align-items:center;justify-content:center;background:#f1ce85;color:#111;width:30px;height:30px;border:2px solid #17171c;border-radius:50%;font-size:17px;box-shadow:0 0 0 3px #7d6234}.segment.active{background:#24232a;border-radius:0 12px 12px 0}.segment.active .detail{display:block}.detail{display:none;border:1px solid #454550;background:#1a1b22;padding:8px;border-radius:9px}.note{font-size:13px;color:#c9cad1}button{padding:9px 13px;background:#34353d;color:white;border:1px solid #696b74;border-radius:10px;cursor:pointer}button:focus-visible{outline:2px solid #e8bf72}.buttons{display:flex;gap:8px;flex-wrap:wrap}#current{font-variant-numeric:tabular-nums}a{color:#d8c49b}
+</style></head><body><main>
+<p class="muted">Yevera · 公開介面測試 · 無個人命盤資料</p><h1>🌙 月亮星宿 × 農民曆時間軸</h1><p class="muted">2026/11/21（六）｜Asia/Taipei｜台中參考｜研究試跑，不是正式擇時</p>
+<section class="card"><div class="head"><h2>時間定位</h2><span class="badge">PUBLIC UI PILOT</span></div>
+<p id="current" aria-live="polite">讀取台灣時間中…</p>
+<div class="buttons"><button type="button" id="live">🌙 返回現在</button><button type="button" id="demo">▶ 示範 11/21 12:00</button></div>
+<p class="note" id="mode"></p>
+<div class="bar" aria-label="依實際分鐘比例的月亮星宿 Pada 色帶" id="bar"></div><div class="ruler"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
+<div class="timeline" id="timeline"></div>
+<p class="note">🌙 表示所選時間的精確比例位置。⭐ 只用於已核實的個人精確觸發；此公開示範沒有個人精確觸發，因此不顯示金色 ⭐。</p>
+</section>
+<section class="card"><h2>共同農民曆｜11/21</h2><p>日出 06:16／日落 17:10（台中試算）</p><p>日出時：星期六 · Śukla Ekādaśī · Pūrvabhādrapadā P4 · Vajra Yoga · Viṣṭi Karaṇa</p><p class="note">09:02 Tithi→Dvādaśī、Karaṇa→Bava；07:22 Yoga→Siddhi；20:21 Karaṇa→Bālava。上述時間為初算，待獨立核證。</p></section>
+<p class="note">安全限制：本頁僅展示共同天象及通用活動分類，不包含任何人的出生資料、運限、私人事件或個人報告。登入及授權完成前，不公開個人農民曆。</p>
+</main><script>
+"use strict";
+const parts=[
+{a:0,b:205,name:"Pūrvabhādrapadā · P3",c:"#72899f",desc:"整理尚未決定的方向、資源與承諾",act:"盤點、檢查、準備"},
+{a:205,b:559,name:"Pūrvabhādrapadā · P4",c:"#72899f",desc:"溝通、研究及計畫過渡；07:22 Yoga 換界",act:"整理文件、核對訊息"},
+{a:559,b:909,name:"Uttarabhādrapadā · P1",c:"#9b81b4",desc:"把分散想法轉成可執行的步驟",act:"建立清單、安排順序"},
+{a:909,b:1257,name:"Uttarabhādrapadā · P2",c:"#9b81b4",desc:"工作資料、協作分工與後續安排",act:"檢查進度、討論執行"},
+{a:1257,b:1440,name:"Uttarabhādrapadā · P3",c:"#9b81b4",desc:"檢視進度與隔日安排",act:"收尾、整理待辦"}];
+const fmt=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+const bar=document.getElementById("bar"),line=document.getElementById("timeline");
+parts.forEach((p,i)=>{const b=document.createElement("span");b.style.width=(p.b-p.a)/1440*100+"%";b.style.background=p.c;b.title=p.name+" "+fmt(p.a)+"–"+fmt(p.b);bar.append(b);
+const s=document.createElement("section");s.className="segment";s.dataset.i=i;s.style.height=Math.max(84,(p.b-p.a)/1440*720)+"px";s.innerHTML='<span class="when">'+fmt(p.a)+'</span><span class="dot" style="background:'+p.c+'"></span><strong>'+p.name+'</strong><p>'+p.desc+'</p><div class="detail"><p><b>A｜觀察：</b>'+p.desc+'</p><p><b>B｜活動：</b>'+p.act+'</p></div>';line.append(s)});
+const marker=document.createElement("span");marker.className="marker";marker.textContent="☾";marker.setAttribute("aria-label","目前時間月亮位置");line.append(marker);
+let demo=false;
+function taipeiNow(){const x=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Taipei",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date());const v=Object.fromEntries(x.map(y=>[y.type,y.value]));return {date:v.year+"-"+v.month+"-"+v.day,minute:Number(v.hour)*60+Number(v.minute)}}
+function render(){const n=taipeiNow();const valid=demo||n.date==="2026-11-21";const m=demo?720:n.minute;document.getElementById("current").textContent=valid?(demo?"示範時間：":"目前台灣時間：")+fmt(m):"台灣現在是 "+n.date+" "+fmt(n.minute)+"，不是 11/21";
+document.getElementById("mode").textContent=demo?"示範模式：月亮標記位於 11/21 12:00；不是實際現在。":valid?"即時模式：每分鐘自動更新；開啟頁面時立即定位。":"歷史日期：不將現在時間錯置到 11/21。可點選「示範」查看定位效果。";
+marker.style.display=valid?"flex":"none";document.querySelectorAll(".segment").forEach((el,i)=>el.classList.toggle("active",valid&&m>=parts[i].a&&m<parts[i].b));
+if(valid){const total=line.scrollHeight;marker.style.top=(m/1440*total-15)+"px";}
+}
+document.getElementById("demo").addEventListener("click",()=>{demo=true;render()});
+document.getElementById("live").addEventListener("click",()=>{demo=false;render()});
+render();setInterval(render,15000);
+</script></body></html>
