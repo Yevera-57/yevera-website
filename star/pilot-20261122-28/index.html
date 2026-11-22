@@ -31,7 +31,7 @@ function select(d){document.querySelectorAll(".day").forEach((e,i)=>e.classList.
   if(day===23){
    const seg=[...timeline.querySelectorAll(".seg")].find(x=>+x.dataset.start===23*60+6); 
    const box=document.createElement("div");box.className="seg";box.dataset.start="1292";box.dataset.end="1440";box.innerHTML="<span class='time'>21:32<br><small>B｜±1°</small></span><span class='dot' style='background:#d9b86c'></span><div class='precise'><strong>⭐ 月亮合本命太陽｜核心窗口開始</strong><p class='astro'>±1° 11/23 21:32–11/24 00:47｜exact 23:09:56</p><p>可能事件：工作責任、重要回應與私人安排需要確認。事件觀察重點：具體時間、承諾、資源條件。</p></div>";
-   timeline.insertBefore(box,timeline.querySelector(".now"));
+   timeline.insertBefore(box,[...timeline.querySelectorAll(".seg")].find(x=>+x.dataset.start===1386)||timeline.querySelector(".now"));
   }else{
    const box=document.createElement("div");box.className="seg";box.dataset.start="0";box.dataset.end="186";box.innerHTML="<span class='time'>00:00<br><small>B｜延續</small></span><span class='dot' style='background:#d9b86c'></span><div class='precise'><strong>⭐ 月亮合本命太陽／羅喉｜跨日核心</strong><p class='astro'>太陽±1°至00:47；羅喉exact 01:29:25，±1°至03:06</p><p>可能事件：確認先前的責任、合作與資源條件。事件觀察重點：已核實回覆與待確認資訊。</p></div>";
    timeline.insertBefore(box,timeline.firstChild);
