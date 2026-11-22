@@ -3,15 +3,15 @@
 .week-chart h2{color:#f1eee8;margin:4px 0 8px}
 .week-scroll{overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
 .week-graph{width:1680px;position:relative;font-size:11px}
-.week-head{height:66px;position:relative}.week-date{position:absolute;top:0;font-weight:700;color:#f3efe8}
-.week-time{position:absolute;top:35px;transform:translateX(-50%);white-space:nowrap;color:#b9bec8;font-size:10px}
-.week-bar{height:67px;position:relative}.week-star{position:absolute;top:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;white-space:normal;line-height:1.18;padding:2px 3px;border-radius:4px;font-size:10px;overflow-wrap:anywhere}
+.week-head{height:43px;position:relative}.week-date{position:absolute;top:0;font-weight:700;color:#f3efe8}
+.week-time{position:absolute;top:22px;transform:translateX(-50%);white-space:nowrap;color:#b9bec8;font-size:10px}
+.week-bar{height:92px;position:relative}.week-pin{position:absolute;z-index:5;top:55px;transform:translateX(-50%);padding:2px 4px;max-width:160px;white-space:nowrap;font-size:9px;line-height:1.2;border-radius:5px;border:1px solid #8fb2c3;background:#233d4b;color:#f1f5fa}.week-pin.personal{top:68px;background:#544026;color:#ffe3a4;border-color:#e6c77b}.week-pin.general{top:54px}.week-star{position:absolute;top:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;white-space:normal;line-height:1.18;padding:2px 3px;border-radius:4px;font-size:10px;overflow-wrap:anywhere}
 .week-star b{font-size:10px}.week-star small{font-size:9px}
-.week-divider{position:absolute;top:0;bottom:0;width:1px;background:#fff;opacity:.85;z-index:2}
+.week-divider{position:absolute;top:0;bottom:0;width:1px;background:#fff;opacity:.38;z-index:2}
 .week-degrees{height:35px;position:relative}.week-degree{position:absolute;top:4px;transform:translateX(-50%);white-space:nowrap;font-size:10px;color:#b9bec8}
 .week-nav{height:100px;position:relative}.week-navitem{position:absolute;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;text-align:center;overflow-wrap:anywhere;padding:2px 4px;font-size:10px;line-height:1.2;background:#292833}
 .week-navitem.asc{top:0;height:47px}.week-navitem.moon{top:49px;height:47px;background:#222e36}
-.week-navitem b{color:#e4cb98}
+.week-navitem b{color:#e4cb98}.week-navitem.narrow{font-size:8px;padding:2px 1px;letter-spacing:-.2px}.week-navitem.narrow b{font-size:8px}.week-navitem.tiny{font-size:7px;padding:1px 0}.week-navitem.tiny b{font-size:7px}
 .week-events{height:104px;position:relative;border-top:1px solid #434853;margin-top:9px}
 .week-event{position:absolute;transform:translateX(-50%);white-space:nowrap;text-align:center;padding:5px 7px;border:1px solid #7898a8;border-radius:7px;background:#243644;font-size:10px;line-height:1.2}
 .week-event.personal{top:53px;color:#ffdf8e;background:#483d27;border-color:#d8b56a}.week-event.general{top:7px;color:#e4eef6}
@@ -37,20 +37,20 @@
  const pos=n=>n/10080*100+"%",clock=n=>String(Math.floor(n/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0");
  const head=document.createElement("div");head.className="week-head";
  for(let d=0;d<7;d++){const e=document.createElement("span");e.className="week-date";e.style.left=pos(d*1440);e.textContent="11/"+(22+d)+"（"+"日一二三四五六"[d]+"）";head.append(e)}
- for(let i=1;i<edges.length-1;i++){const e=document.createElement("span");e.className="week-time";e.style.left=pos(edges[i]);e.textContent="11/"+(22+Math.floor(edges[i]/1440))+" "+clock(edges[i]%1440);head.append(e)}
+ for(let i=1;i<edges.length-1;i++){const e=document.createElement("span");e.className="week-time";e.style.left=pos(edges[i]);e.textContent=clock(edges[i]%1440);head.append(e)}
  root.append(head);
  const bar=document.createElement("div");bar.className="week-bar";
  names.forEach((n,i)=>{const e=document.createElement("div");e.className="week-star";e.style.left=pos(edges[i]);e.style.width=pos(edges[i+1]-edges[i]);e.style.background=n[4];e.innerHTML="<b>"+n[0]+" "+n[1]+"</b><small>"+n[2]+"</small><small>"+n[3]+"</small>";bar.append(e)});
  for(let d=1;d<7;d++){const e=document.createElement("span");e.className="week-divider";e.style.left=pos(d*1440);bar.append(e)}root.append(bar);
  const deg=document.createElement("div");deg.className="week-degrees";edges.slice(1,-1).forEach((n,i)=>{const e=document.createElement("span");e.className="week-degree";e.style.left=pos(n);e.textContent=degrees[i]||"";deg.append(e)});root.append(deg);
  const nav=document.createElement("div");nav.className="week-nav";
- names.forEach((n,i)=>{const num=+n[0];for(const type of ["asc","moon"]){const start=type==="asc"?11:7;const k=(num-start+27)%9;const e=document.createElement("div");e.className="week-navitem "+type;e.style.left=pos(edges[i]);e.style.width=pos(edges[i+1]-edges[i]);e.innerHTML="<b>"+(type==="asc"?"上升":"月宿")+"：</b>"+(k+1)+" "+terms[k];nav.append(e)}});root.append(nav);
- const events=document.createElement("div");events.className="week-events";
+ names.forEach((n,i)=>{const num=+n[0];for(const type of ["asc","moon"]){const start=type==="asc"?11:7;const k=(num-start+27)%9;const e=document.createElement("div");e.className="week-navitem "+type;e.style.left=pos(edges[i]);e.style.width=pos(edges[i+1]-edges[i]);e.innerHTML="<b>"+(type==="asc"?"上升":"月宿")+"：</b>"+(k+1)+" "+terms[k];if(edges[i+1]-edges[i]<800)e.classList.add("narrow");if(edges[i+1]-edges[i]<550)e.classList.add("tiny");nav.append(e)}});root.append(nav);
+ // Verified events are plotted inside the same colored Nakshatra bar.
  const items=[
  {m:7*60+27,label:"月亮合本命金星",date:"11/22 07:27",personal:true},
  {m:2*1440+22*60+53.6,label:"滿月｜日月對沖",date:"11/24 22:53",personal:false}
  ];
- items.forEach(x=>{const e=document.createElement("div");e.className="week-event "+(x.personal?"personal":"general");e.style.left=pos(x.m);e.innerHTML=(x.personal?"⭐ ":"☼ ")+x.label+"<small>"+x.date+"</small>";events.append(e)});
- root.append(events);
+ items.forEach(x=>{const e=document.createElement("span");e.className="week-pin "+(x.personal?"personal":"general");e.style.left=pos(x.m);e.title=x.date+"｜"+x.label;e.textContent=(x.personal?"⭐ ":"☼ ")+x.date.slice(6)+" "+x.label;bar.append(e)});
+
 })();
 </script></body></html>
