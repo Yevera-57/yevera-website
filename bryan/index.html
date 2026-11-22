@@ -67,4 +67,51 @@ copyAll=function(){
  const text="bryan｜已核實發布日期全文\n\n"+[0,1,2].map(currentDayText).filter(Boolean).join("\n\n────────\n\n");
  cp(text);
 };
+
+// Taiwan-local calendar day, independent of device timezone.
+function taiwanNow(){
+ const parts=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Taipei",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date());
+ const get=k=>Number(parts.find(x=>x.type===k).value);
+ return {year:get("year"),month:get("month"),day:get("day"),minute:get("hour")*60+get("minute")};
+}
+function selectPublishedDay(i){
+ const buttons=[...document.querySelectorAll("[data-tab]")];
+ if(!buttons[i])return;
+ buttons[i].click();
+ buttons[i].scrollIntoView({block:"nearest",inline:"nearest"});
+}
+function syncToday(){
+ const n=taiwanNow();
+ if(n.year===2026&&n.month===11&&n.day>=22&&n.day<=24){
+  if(!window.__bryanUserSelectedDate||window.__bryanAutoDay!==n.day){
+   selectPublishedDay(n.day-22);
+   window.__bryanAutoDay=n.day;
+  }
+ }
+ document.querySelectorAll(".bryan-now").forEach(x=>x.remove());
+ const active=document.querySelector(".day.active");
+ if(!active||n.year!==2026||n.month!==11||n.day<22||n.day>24||active.id!=="day-"+(n.day-22))return;
+ const axis=active.querySelector(".timeaxis");if(!axis)return;
+ const rows=[...axis.querySelectorAll(".axisrow")];
+ const starts=rows.map(row=>{
+  const when=row.querySelector(".when")?.textContent||"";
+  const m=when.match(/(\d{2}):(\d{2})/);
+  return m?Number(m[1])*60+Number(m[2]):null;
+ });
+ let index=-1;
+ for(let i=0;i<starts.length;i++)if(starts[i]!==null&&starts[i]<=n.minute)index=i;
+ if(index<0)return;
+ const marker=document.createElement("div");
+ marker.className="bryan-now";
+ marker.setAttribute("aria-label","目前台灣時間的月亮時段");
+ marker.style.cssText="position:relative;margin:9px 0 9px -76px;padding:5px 8px;border:1px solid #b9c9d9;border-radius:9px;background:#243642;color:#fff;font-size:12px;font-weight:700;z-index:6";
+ marker.textContent="🌙 現在 "+String(Math.floor(n.minute/60)).padStart(2,"0")+":"+String(n.minute%60).padStart(2,"0")+"（台灣時間）";
+ rows[index].insertAdjacentElement("afterend",marker);
+}
+document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{
+ window.__bryanUserSelectedDate=true;
+ syncToday();
+}));
+syncToday();
+setInterval(syncToday,60000);
 </script></body></html>
