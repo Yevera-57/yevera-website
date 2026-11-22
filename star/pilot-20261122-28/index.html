@@ -75,4 +75,27 @@ if(full24){
 }
  if(typeof render==="function")render();
 })();
+
+// Copy exactly the currently rendered date article, excluding UI controls.
+function copyPublishedDay(section){
+ const clone=section.cloneNode(true);
+ clone.querySelectorAll("button,.controls,.now").forEach(e=>e.remove());
+ const value=clone.innerText.trim();
+ if(navigator.clipboard&&navigator.clipboard.writeText){
+  navigator.clipboard.writeText(value).then(()=>{const n=section.querySelector(".copy-status");if(n)n.textContent="已複製本日全文";}).catch(()=>fallbackCopy(value,section));
+ }else fallbackCopy(value,section);
+}
+function fallbackCopy(value,section){
+ const t=document.createElement("textarea");t.value=value;document.body.append(t);t.select();
+ const ok=document.execCommand("copy");t.remove();
+ const n=section.querySelector(".copy-status");if(n)n.textContent=ok?"已複製本日全文":"複製失敗，請手動選取文字";
+}
+document.querySelectorAll("#days .day").forEach(section=>{
+ if(section.querySelector(".copy-reading"))return;
+ const b=document.createElement("button");b.type="button";b.className="copy-reading";b.textContent="複製本日完整精讀";
+ b.style.cssText="padding:10px 14px;margin:12px 0;border:1px solid #b69b71;background:#272630;color:#f1eee8;border-radius:10px";
+ b.addEventListener("click",()=>copyPublishedDay(section));
+ const n=document.createElement("p");n.className="copy-status note";n.setAttribute("aria-live","polite");
+ section.append(b,n);
+});
 </script></body></html>
